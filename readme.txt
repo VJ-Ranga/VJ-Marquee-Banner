@@ -17,7 +17,6 @@ Features include:
 
 * Text marquee with multiple lines and optional link
 * Image marquee with adjustable image height
-* Elementor widgets for text and images
 * Elementor template support (Elementor Library and Header & Footer Builder)
 * Custom colors, spacing, typography, and Google Font loading
 

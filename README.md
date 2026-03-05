@@ -7,8 +7,7 @@ VJ Marquee Banner adds a scrolling announcement ticker above your site header. C
 ## Features
 - Text marquee with multiple lines and optional link
 - Image marquee with adjustable image height
-- Elementor widgets for text and images
-- Elementor template support (Header & Footer Builder)
+- Elementor template support (Elementor Library and Header & Footer Builder)
 - Custom colors, spacing, typography, and Google Font loading
 
 ## Installation
@@ -22,7 +21,6 @@ VJ Marquee Banner adds a scrolling announcement ticker above your site header. C
 - Legacy shortcode (backward compatibility): `[elessi_topbar_banner]`
 
 ## Elementor
-- Widgets: **VJ Marquee Banner** (text) and **VJ Marquee Images** (images)
 - Elementor template support works with Elementor Library and Header & Footer Builder templates
 
 ## Compatibility

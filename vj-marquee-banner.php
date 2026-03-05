@@ -33,10 +33,6 @@ final class VJ_Marquee_Banner {
         add_action('admin_enqueue_scripts', array($this, 'admin_assets'));
         add_action('admin_menu', array($this, 'register_menu'));
         add_action('admin_init', array($this, 'register_settings'));
-        add_action('elementor/widgets/register', array($this, 'register_elementor_widget'));
-        add_action('elementor/widgets/widgets_registered', array($this, 'register_elementor_widget_legacy'));
-        add_action('elementor/editor/after_enqueue_styles', array($this, 'register_elementor_assets'));
-        add_action('elementor/editor/after_enqueue_scripts', array($this, 'register_elementor_assets'));
         add_shortcode('elessi_topbar_banner', array($this, 'shortcode'));
         add_shortcode('vj_marquee_banner', array($this, 'shortcode'));
     }
@@ -44,7 +40,6 @@ final class VJ_Marquee_Banner {
     private function defaults() {
         return array(
             'enabled' => 1,
-            'elementor_widgets' => 1,
             'content_type' => 'text',
             'text' => 'Free Shipping for orders above Rs 5000',
             'url' => '',
@@ -396,18 +391,13 @@ final class VJ_Marquee_Banner {
         $handle = 'vj-marquee-banner';
 
         $options = $this->get_options();
-        $has_widgets = !empty($options['elementor_widgets']);
         $has_banner = !empty($options['enabled']);
 
-        if (!$has_widgets && !$has_banner) {
+        if (!$has_banner) {
             return;
         }
 
         wp_enqueue_style($handle);
-
-        if ($has_widgets) {
-            wp_enqueue_script($handle);
-        }
 
         if ($has_banner && in_array($options['content_type'], array('text', 'images'), true)) {
             wp_enqueue_script($handle);
@@ -710,15 +700,6 @@ final class VJ_Marquee_Banner {
         );
 
         add_settings_field(
-            'elementor_widgets',
-            'Enable Elementor Widgets',
-            array($this, 'field_elementor_widgets'),
-            'vj-marquee-banner',
-            'vj_marquee_banner_general',
-            array('class' => 'vj-marquee-field vj-marquee-field--shared')
-        );
-
-        add_settings_field(
             'content_type',
             'Content Source',
             array($this, 'field_content_type'),
@@ -886,7 +867,6 @@ final class VJ_Marquee_Banner {
         $output = array();
 
         $output['enabled'] = isset($input['enabled']) ? 1 : 0;
-        $output['elementor_widgets'] = isset($input['elementor_widgets']) ? 1 : 0;
         $content_type = isset($input['content_type']) ? sanitize_text_field($input['content_type']) : $defaults['content_type'];
         $output['content_type'] = in_array($content_type, array('text', 'images', 'elementor'), true) ? $content_type : $defaults['content_type'];
         $output['text'] = isset($input['text']) && $input['text'] !== ''
@@ -1073,12 +1053,6 @@ final class VJ_Marquee_Banner {
         echo '<p class="description">Enable or disable the marquee globally.</p>';
     }
 
-    public function field_elementor_widgets() {
-        $options = $this->get_options();
-        $checked = !empty($options['elementor_widgets']) ? 'checked' : '';
-        echo '<label><input type="checkbox" name="' . self::OPTION_KEY . '[elementor_widgets]" value="1" ' . $checked . '> Enable Elementor marquee widgets</label>';
-    }
-
     public function field_content_type() {
         $options = $this->get_options();
         $value = $options['content_type'];
@@ -1263,75 +1237,6 @@ final class VJ_Marquee_Banner {
         $value = esc_attr($options['font_weights']);
         echo '<input type="text" name="' . self::OPTION_KEY . '[font_weights]" value="' . $value . '" class="regular-text" placeholder="400;600;700">';
         echo '<p class="description">Only used for Google Fonts.</p>';
-    }
-
-    public function register_elementor_widget($widgets_manager) {
-        $options = $this->get_options();
-        if (empty($options['elementor_widgets'])) {
-            return;
-        }
-
-        if (!class_exists('Elementor\\Widget_Base')) {
-            return;
-        }
-
-        $widget_file = __DIR__ . '/includes/class-vj-marquee-widget.php';
-        if (file_exists($widget_file)) {
-            require_once $widget_file;
-        }
-
-        $image_widget_file = __DIR__ . '/includes/class-vj-marquee-images-widget.php';
-        if (file_exists($image_widget_file)) {
-            require_once $image_widget_file;
-        }
-
-        if (!class_exists('VJ_Marquee_Widget')) {
-            return;
-        }
-
-        if (method_exists($widgets_manager, 'register')) {
-            $widgets_manager->register(new VJ_Marquee_Widget());
-            if (class_exists('VJ_Marquee_Images_Widget')) {
-                $widgets_manager->register(new VJ_Marquee_Images_Widget());
-            }
-        } elseif (method_exists($widgets_manager, 'register_widget_type')) {
-            $widgets_manager->register_widget_type(new VJ_Marquee_Widget());
-            if (class_exists('VJ_Marquee_Images_Widget')) {
-                $widgets_manager->register_widget_type(new VJ_Marquee_Images_Widget());
-            }
-        }
-    }
-
-    public function register_elementor_widget_legacy() {
-        $options = $this->get_options();
-        if (empty($options['elementor_widgets'])) {
-            return;
-        }
-
-        if (!class_exists('Elementor\\Plugin')) {
-            return;
-        }
-
-        $widgets_manager = \Elementor\Plugin::instance()->widgets_manager;
-        if (!$widgets_manager) {
-            return;
-        }
-
-        $this->register_elementor_widget($widgets_manager);
-    }
-
-    public function register_elementor_assets() {
-        $options = $this->get_options();
-        if (empty($options['elementor_widgets'])) {
-            return;
-        }
-
-        $this->register_assets();
-        if ($options['content_type'] === 'text') {
-            $this->maybe_enqueue_google_font($options);
-        }
-        wp_enqueue_style('vj-marquee-banner');
-        wp_enqueue_script('vj-marquee-banner');
     }
 
     private function is_legacy_theme() {
