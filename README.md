@@ -1,6 +1,7 @@
 # VJ Marquee Banner
 
-![VJ Marquee Banner](./assets/VJ-Marquee-Banner.png)
+![VJ Marquee Banner](VJ-Marquee-Banner.png)
+
 VJ Marquee Banner adds a scrolling announcement ticker above your site header. Create text or image marquees, or render an Elementor template, with a modern settings UI and live preview.
 
 ## Features
