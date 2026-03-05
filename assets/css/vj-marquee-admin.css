@@ -1,0 +1,246 @@
+.vj-marquee-settings {
+    max-width: 1120px;
+}
+
+.vj-marquee-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 18px 22px;
+}
+
+.vj-marquee-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: #111827;
+}
+
+.vj-marquee-subtitle {
+    margin-top: 6px;
+    color: #6b7280;
+}
+
+.vj-marquee-save {
+    padding: 8px 18px;
+}
+
+.vj-marquee-preview {
+    margin: 16px 0;
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 14px 16px;
+    color: #1f2937;
+}
+
+.vj-marquee-preview-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #64748b;
+    margin-bottom: 12px;
+}
+
+.vj-marquee-preview-label {
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.vj-marquee-preview-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #22c55e;
+    margin: 0 8px;
+}
+
+.vj-marquee-preview-meta {
+    margin-left: auto;
+    font-size: 11px;
+    color: #94a3b8;
+}
+
+.vj-marquee-preview-frame {
+    background: #fff;
+    border-radius: 10px;
+    padding: 0;
+    color: #111827;
+    overflow: hidden;
+    border: 1px solid #e5e7eb;
+}
+
+.vj-marquee-preview-empty {
+    color: #9ca3af;
+    text-align: center;
+    padding: 16px;
+}
+
+.vj-marquee-layout {
+    display: flex;
+    gap: 18px;
+    margin-top: 18px;
+}
+
+.vj-marquee-sidebar {
+    width: 240px;
+    flex-shrink: 0;
+}
+
+.vj-marquee-nav {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.vj-marquee-nav-item {
+    display: block;
+    width: 100%;
+    padding: 14px 16px;
+    border: 0;
+    background: #fff;
+    text-align: left;
+    font-weight: 600;
+    color: #64748b;
+    cursor: pointer;
+}
+
+.vj-marquee-nav-item + .vj-marquee-nav-item {
+    border-top: 1px solid #f1f5f9;
+}
+
+.vj-marquee-nav-item.is-active {
+    background: #1d4ed8;
+    color: #fff;
+}
+
+.vj-marquee-nav-item.is-hidden {
+    display: none;
+}
+
+.vj-marquee-shortcode {
+    margin-top: 16px;
+}
+
+.vj-marquee-shortcode h3 {
+    margin: 0 0 10px;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #64748b;
+}
+
+.vj-marquee-shortcode code {
+    display: block;
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 10px 12px;
+}
+
+.vj-marquee-main {
+    flex: 1;
+}
+
+.vj-marquee-card {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin: 0 0 16px;
+}
+
+.vj-marquee-card h2 {
+    margin: 0 0 12px;
+    font-size: 16px;
+    color: #111827;
+}
+
+.vj-marquee-settings .form-table {
+    margin-top: 0;
+}
+
+.vj-marquee-settings .form-table th {
+    width: 220px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+}
+
+.vj-marquee-settings .form-table td {
+    padding-top: 12px;
+    padding-bottom: 12px;
+}
+
+.vj-marquee-settings input.regular-text {
+    max-width: 360px;
+    width: 100%;
+}
+
+.vj-marquee-settings textarea {
+    max-width: 540px;
+    width: 100%;
+}
+
+.vj-marquee-settings .description {
+    color: #6b7280;
+}
+
+.vj-marquee-image-controls {
+    margin: 6px 0 10px;
+}
+
+.vj-marquee-image-preview {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.vj-marquee-thumb-wrap {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 72px;
+    height: 72px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    background: #f9fafb;
+    overflow: hidden;
+}
+
+.vj-marquee-thumb {
+    max-width: 100%;
+    height: auto;
+}
+
+.vj-marquee-footer {
+    margin: 8px 0 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.vj-marquee-credits {
+    margin-left: auto;
+    font-size: 12px;
+    color: #94a3b8;
+}
+
+.vj-marquee-credits a {
+    color: #94a3b8;
+    text-decoration: none;
+}
+
+.vj-marquee-credits a:hover {
+    color: #1d4ed8;
+    text-decoration: underline;
+}
+
+.vj-marquee-field--hidden {
+    display: none;
+}

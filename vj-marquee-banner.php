@@ -3,12 +3,20 @@
  * Plugin Name: VJ Marquee Banner
  * Description: Adds a scrolling announcement banner above the header.
  * Version: 1.0.0
- * Author: OpenCode
+ * Author: VJ Ranga
+ * Author URI: https://vjranga.com
+ * License: GPLv2 or later
+ * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: vj-marquee-banner
+ * Domain Path: /languages
  */
 
 if (!defined('ABSPATH')) {
     exit;
+}
+
+if (!defined('VJ_MARQUEE_BANNER_VERSION')) {
+    define('VJ_MARQUEE_BANNER_VERSION', '1.0.0');
 }
 
 final class VJ_Marquee_Banner {
@@ -18,6 +26,7 @@ final class VJ_Marquee_Banner {
     private $rendered = false;
 
     public function __construct() {
+        add_action('plugins_loaded', array($this, 'load_textdomain'));
         add_action('nasa_before_header_structure', array($this, 'render'), 5);
         add_action('wp_body_open', array($this, 'render_fallback'), 5);
         add_action('wp_enqueue_scripts', array($this, 'enqueue_assets'));
@@ -75,15 +84,23 @@ final class VJ_Marquee_Banner {
             $handle,
             plugins_url('assets/css/vj-marquee-banner.css', __FILE__),
             array(),
-            '1.0.0'
+            VJ_MARQUEE_BANNER_VERSION
         );
 
         wp_register_script(
             $handle,
             plugins_url('assets/js/vj-marquee-banner.js', __FILE__),
             array(),
-            '1.0.0',
+            VJ_MARQUEE_BANNER_VERSION,
             true
+        );
+    }
+
+    public function load_textdomain() {
+        load_plugin_textdomain(
+            'vj-marquee-banner',
+            false,
+            dirname(plugin_basename(__FILE__)) . '/languages'
         );
     }
 
@@ -199,6 +216,19 @@ final class VJ_Marquee_Banner {
 
         wp_enqueue_media();
         $this->register_assets();
+        wp_enqueue_style(
+            'vj-marquee-banner-admin',
+            plugins_url('assets/css/vj-marquee-admin.css', __FILE__),
+            array(),
+            VJ_MARQUEE_BANNER_VERSION
+        );
+        wp_enqueue_script(
+            'vj-marquee-banner-admin',
+            plugins_url('assets/js/vj-marquee-admin.js', __FILE__),
+            array(),
+            VJ_MARQUEE_BANNER_VERSION,
+            true
+        );
         wp_enqueue_style('vj-marquee-banner');
         wp_enqueue_script('vj-marquee-banner');
 
@@ -1033,145 +1063,6 @@ final class VJ_Marquee_Banner {
         echo '</div>';
 
         echo '</form>';
-
-        echo '<style>';
-        echo '.vj-marquee-settings{max-width:1120px;}';
-        echo '.vj-marquee-header{display:flex;align-items:center;justify-content:space-between;background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:18px 22px;}';
-        echo '.vj-marquee-title{font-size:22px;font-weight:700;color:#111827;}';
-        echo '.vj-marquee-subtitle{margin-top:6px;color:#6b7280;}';
-        echo '.vj-marquee-save{padding:8px 18px;}';
-        echo '.vj-marquee-preview{margin:16px 0;background:#f8fafc;border:1px solid #e5e7eb;border-radius:12px;padding:14px 16px;color:#1f2937;}';
-        echo '.vj-marquee-preview-head{display:flex;align-items:center;justify-content:space-between;font-size:12px;color:#64748b;margin-bottom:12px;}';
-        echo '.vj-marquee-preview-label{font-weight:700;letter-spacing:0.04em;text-transform:uppercase;}';
-        echo '.vj-marquee-preview-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#22c55e;margin:0 8px;}';
-        echo '.vj-marquee-preview-meta{margin-left:auto;font-size:11px;color:#94a3b8;}';
-        echo '.vj-marquee-preview-frame{background:#fff;border-radius:10px;padding:0;color:#111827;overflow:hidden;border:1px solid #e5e7eb;}';
-        echo '.vj-marquee-preview-empty{color:#9ca3af;text-align:center;padding:16px;}';
-        echo '.vj-marquee-layout{display:flex;gap:18px;margin-top:18px;}';
-        echo '.vj-marquee-sidebar{width:240px;flex-shrink:0;}';
-        echo '.vj-marquee-nav{background:#fff;border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;}';
-        echo '.vj-marquee-nav-item{display:block;width:100%;padding:14px 16px;border:0;background:#fff;text-align:left;font-weight:600;color:#64748b;cursor:pointer;}';
-        echo '.vj-marquee-nav-item + .vj-marquee-nav-item{border-top:1px solid #f1f5f9;}';
-        echo '.vj-marquee-nav-item.is-active{background:#1d4ed8;color:#fff;}';
-        echo '.vj-marquee-nav-item.is-hidden{display:none;}';
-        echo '.vj-marquee-shortcode{margin-top:16px;}';
-        echo '.vj-marquee-shortcode h3{margin:0 0 10px;font-size:13px;text-transform:uppercase;letter-spacing:0.08em;color:#64748b;}';
-        echo '.vj-marquee-shortcode code{display:block;background:#f8fafc;border:1px solid #e5e7eb;border-radius:10px;padding:10px 12px;}';
-        echo '.vj-marquee-main{flex:1;}';
-        echo '.vj-marquee-card{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:16px 20px;margin:0 0 16px;}';
-        echo '.vj-marquee-card h2{margin:0 0 12px;font-size:16px;color:#111827;}';
-        echo '.vj-marquee-settings .form-table{margin-top:0;}';
-        echo '.vj-marquee-settings .form-table th{width:220px;padding-top:12px;padding-bottom:12px;}';
-        echo '.vj-marquee-settings .form-table td{padding-top:12px;padding-bottom:12px;}';
-        echo '.vj-marquee-settings input.regular-text{max-width:360px;width:100%;}';
-        echo '.vj-marquee-settings textarea{max-width:540px;width:100%;}';
-        echo '.vj-marquee-settings .description{color:#6b7280;}';
-        echo '.vj-marquee-image-controls{margin:6px 0 10px;}';
-        echo '.vj-marquee-image-preview{display:flex;flex-wrap:wrap;gap:10px;}';
-        echo '.vj-marquee-thumb-wrap{display:inline-flex;align-items:center;justify-content:center;width:72px;height:72px;border:1px solid #e5e7eb;border-radius:8px;background:#f9fafb;overflow:hidden;}';
-        echo '.vj-marquee-thumb{max-width:100%;height:auto;}';
-        echo '.vj-marquee-footer{margin:8px 0 24px;display:flex;align-items:center;gap:12px;}';
-        echo '.vj-marquee-credits{margin-left:auto;font-size:12px;color:#94a3b8;}';
-        echo '.vj-marquee-credits a{color:#94a3b8;text-decoration:none;}';
-        echo '.vj-marquee-credits a:hover{color:#1d4ed8;text-decoration:underline;}';
-        echo '.vj-marquee-field--hidden{display:none;}';
-        echo '</style>';
-        echo '<script>';
-        echo '(function(){';
-        echo 'var select=document.getElementById("vj-marquee-content-type");';
-        echo 'var fontSource=document.getElementById("vj-marquee-font-source");';
-        echo 'var fontSelect=document.getElementById("vj-marquee-font-family-select");';
-        echo 'var fontCustom=document.getElementById("vj-marquee-font-family-custom");';
-        echo 'var imageButton=document.getElementById("vj-marquee-image-select");';
-        echo 'var imageClear=document.getElementById("vj-marquee-image-clear");';
-        echo 'var imageInput=document.getElementById("vj-marquee-image-ids");';
-        echo 'var imagePreview=document.getElementById("vj-marquee-image-preview");';
-        echo 'var navItems=document.querySelectorAll(".vj-marquee-nav-item");';
-        echo 'var cards=document.querySelectorAll(".vj-marquee-card[data-tab]");';
-        echo 'var activeTab="general";';
-        echo 'if(!select){return;}';
-        echo 'var setActiveTab=function(tab){';
-        echo 'activeTab=tab;';
-        echo 'navItems.forEach(function(btn){btn.classList.toggle("is-active",btn.dataset.tab===tab);});';
-        echo 'render();';
-        echo '};';
-        echo 'var render=function(){';
-        echo 'var mode=select.value;';
-        echo 'var isElementor=mode==="elementor";';
-        echo 'var isText=mode==="text";';
-        echo 'var isImages=mode==="images";';
-        echo 'var showAnim=!isElementor;';
-        echo 'var showAppearance=!isElementor;';
-        echo 'if(!showAnim && activeTab==="animation"){activeTab="content";}';
-        echo 'if(!showAppearance && activeTab==="appearance"){activeTab="content";}';
-        echo 'navItems.forEach(function(btn){';
-        echo 'var tab=btn.dataset.tab;';
-        echo 'var allowed=true;';
-        echo 'if(tab==="animation" && !showAnim){allowed=false;}';
-        echo 'if(tab==="appearance" && !showAppearance){allowed=false;}';
-        echo 'btn.classList.toggle("is-hidden",!allowed);';
-        echo 'if(!allowed && btn.classList.contains("is-active")){btn.classList.remove("is-active");}';
-        echo 'if(allowed && tab===activeTab){btn.classList.add("is-active");}';
-        echo '});';
-        echo 'cards.forEach(function(card){';
-        echo 'var show=card.dataset.tab===activeTab;';
-        echo 'if(show){';
-        echo 'if(card.classList.contains("vj-marquee-section--text")){show=isText;}';
-        echo 'if(card.classList.contains("vj-marquee-section--images")){show=isImages;}';
-        echo 'if(card.classList.contains("vj-marquee-section--elementor")){show=isElementor;}';
-        echo 'if(card.classList.contains("vj-marquee-section--media") && isElementor){show=false;}';
-        echo '}';
-        echo 'card.style.display=show?"block":"none";';
-        echo '});';
-        echo 'document.querySelectorAll(".vj-marquee-field--elementor").forEach(function(row){row.style.display=isElementor?"table-row":"none";});';
-        echo 'document.querySelectorAll(".vj-marquee-field--text-only").forEach(function(row){row.style.display=isText?"table-row":"none";});';
-        echo 'document.querySelectorAll(".vj-marquee-field--images").forEach(function(row){row.style.display=isImages?"table-row":"none";});';
-        echo 'document.querySelectorAll(".vj-marquee-field--media").forEach(function(row){row.style.display=isElementor?"none":"table-row";});';
-        echo 'if(fontSource){';
-        echo 'var isGoogle=fontSource.value==="google";';
-        echo 'document.querySelectorAll(".vj-marquee-field--font-weights").forEach(function(row){row.style.display=isGoogle && isText?"table-row":"none";});';
-        echo '}';
-        echo 'if(fontSelect && fontCustom){';
-        echo 'if(fontSelect.value==="__custom__"){fontCustom.style.display="block";}else{fontCustom.style.display="none";if(fontSelect.value!==""){fontCustom.value=fontSelect.value;}else{fontCustom.value="";}}';
-        echo '}';
-        echo '};';
-        echo 'navItems.forEach(function(btn){btn.addEventListener("click",function(){setActiveTab(btn.dataset.tab);});});';
-        echo 'select.addEventListener("change",render);';
-        echo 'if(fontSource){fontSource.addEventListener("change",render);}';
-        echo 'if(fontSelect){fontSelect.addEventListener("change",render);}';
-        echo 'setActiveTab("general");';
-        echo 'render();';
-        echo 'if(imageButton && imageInput && imagePreview){';
-        echo 'var frame;';
-        echo 'var refresh=function(ids){';
-        echo 'imagePreview.innerHTML="";';
-        echo 'ids.forEach(function(id){';
-        echo 'var img=document.createElement("img");';
-        echo 'img.src=wp.media.attachment(id).get("url");';
-        echo 'img.className="vj-marquee-thumb";';
-        echo 'var wrap=document.createElement("span");';
-        echo 'wrap.className="vj-marquee-thumb-wrap";';
-        echo 'wrap.dataset.id=id;';
-        echo 'wrap.appendChild(img);';
-        echo 'imagePreview.appendChild(wrap);';
-        echo '});';
-        echo '};';
-        echo 'imageButton.addEventListener("click",function(e){';
-        echo 'e.preventDefault();';
-        echo 'if(frame){frame.open();return;}';
-        echo 'frame=wp.media({title:"Select Images",button:{text:"Use images"},multiple:true});';
-        echo 'frame.on("select",function(){';
-        echo 'var ids=frame.state().get("selection").map(function(att){return att.id;});';
-        echo 'imageInput.value=ids.join(",");';
-        echo 'refresh(ids);';
-        echo '});';
-        echo 'frame.open();';
-        echo '});';
-        echo 'if(imageClear){imageClear.addEventListener("click",function(e){e.preventDefault();imageInput.value="";imagePreview.innerHTML="";});}';
-        echo 'if(imageInput.value){refresh(imageInput.value.split(",").map(function(v){return parseInt(v,10);}).filter(Boolean));}';
-        echo '}';
-        echo '})();';
-        echo '</script>';
         echo '</div>';
     }
 
