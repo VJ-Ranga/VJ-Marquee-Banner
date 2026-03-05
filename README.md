@@ -18,7 +18,6 @@ VJ Marquee Banner adds a scrolling announcement ticker above your site header. C
 ## Usage
 - Go to **Settings > VJ Marquee Banner** to configure the banner.
 - Shortcode: `[vj_marquee_banner]`
-- Legacy shortcode (backward compatibility): `[elessi_topbar_banner]`
 
 ## Elementor
 - Elementor template support works with Elementor Library and Header & Footer Builder templates

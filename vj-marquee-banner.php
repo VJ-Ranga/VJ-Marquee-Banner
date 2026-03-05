@@ -2,7 +2,7 @@
 /**
  * Plugin Name: VJ Marquee Banner
  * Description: Adds a scrolling announcement banner above the header.
- * Version: 1.0.0
+ * Version: 1.2.0
  * Author: VJ Ranga
  * Author URI: https://vjranga.com
  * License: GPLv2 or later
@@ -16,7 +16,7 @@ if (!defined('ABSPATH')) {
 }
 
 if (!defined('VJ_MARQUEE_BANNER_VERSION')) {
-    define('VJ_MARQUEE_BANNER_VERSION', '1.0.0');
+    define('VJ_MARQUEE_BANNER_VERSION', '1.2.0');
 }
 
 final class VJ_Marquee_Banner {
@@ -33,7 +33,6 @@ final class VJ_Marquee_Banner {
         add_action('admin_enqueue_scripts', array($this, 'admin_assets'));
         add_action('admin_menu', array($this, 'register_menu'));
         add_action('admin_init', array($this, 'register_settings'));
-        add_shortcode('elessi_topbar_banner', array($this, 'shortcode'));
         add_shortcode('vj_marquee_banner', array($this, 'shortcode'));
     }
 
@@ -1029,7 +1028,7 @@ final class VJ_Marquee_Banner {
         echo '<div class="vj-marquee-card vj-marquee-shortcode">';
         echo '<h3>Shortcode</h3>';
         echo '<code>[vj_marquee_banner]</code>';
-        echo '<p class="description">Legacy: [elessi_topbar_banner]</p>';
+        echo '<p class="description">Use this shortcode in any content area or builder.</p>';
         echo '</div>';
         echo '</aside>';
 
@@ -1066,7 +1065,7 @@ final class VJ_Marquee_Banner {
 
     public function field_shortcode() {
         echo '<code>[vj_marquee_banner]</code>';
-        echo '<p class="description">Legacy: [elessi_topbar_banner]</p>';
+        echo '<p class="description">Use this shortcode in any content area or builder.</p>';
     }
 
     public function field_text() {

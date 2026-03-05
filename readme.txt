@@ -4,7 +4,7 @@ Tags: marquee, announcement, banner, elementor
 Requires at least: 5.8
 Tested up to: 6.5
 Requires PHP: 7.4
-Stable tag: 1.0.0
+Stable tag: 1.2.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -30,8 +30,12 @@ Features include:
 Yes. It works with Elementor-compatible themes and supports Elementor templates.
 
 = Can I use a shortcode? =
-Yes: `[vj_marquee_banner]`. A legacy shortcode `[elessi_topbar_banner]` is also supported.
+Yes: `[vj_marquee_banner]`.
 
 == Changelog ==
+= 1.2.0 =
+* Remove legacy shortcode and Elementor widgets.
+* Add admin assets, uninstall handler, and readme metadata.
+
 = 1.0.0 =
 * Initial release.
