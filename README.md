@@ -8,7 +8,7 @@ VJ Marquee Banner adds a scrolling announcement ticker above your site header. C
 - Text marquee with multiple lines and optional link
 - Image marquee with adjustable image height
 - Elementor template support (Elementor Library and Header & Footer Builder)
-- Custom colors, spacing, typography, and Google Font loading
+- Custom colors (hex/rgb/hsl/vars), spacing, typography, and Google Font loading
 
 ## Installation
 1. Download or clone this repository.

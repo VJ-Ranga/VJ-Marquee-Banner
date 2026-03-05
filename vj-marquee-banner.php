@@ -2,7 +2,7 @@
 /**
  * Plugin Name: VJ Marquee Banner
  * Description: Adds a scrolling announcement banner above the header.
- * Version: 1.2.0
+ * Version: 1.2.1
  * Author: VJ Ranga
  * Author URI: https://vjranga.com
  * License: GPLv2 or later
@@ -16,7 +16,7 @@ if (!defined('ABSPATH')) {
 }
 
 if (!defined('VJ_MARQUEE_BANNER_VERSION')) {
-    define('VJ_MARQUEE_BANNER_VERSION', '1.2.0');
+    define('VJ_MARQUEE_BANNER_VERSION', '1.2.1');
 }
 
 final class VJ_Marquee_Banner {
@@ -57,6 +57,8 @@ final class VJ_Marquee_Banner {
             'font_weights' => '400;600;700',
             'image_ids' => '',
             'image_height' => '36',
+            'padding' => '0',
+            'margin' => '0',
         );
     }
 
@@ -103,8 +105,8 @@ final class VJ_Marquee_Banner {
             return '';
         }
 
-        $bg_color = sanitize_hex_color($options['bg_color']);
-        $text_color = sanitize_hex_color($options['text_color']);
+        $bg_color = $this->sanitize_css_value($options['bg_color']);
+        $text_color = $this->sanitize_css_value($options['text_color']);
         $speed = floatval($options['speed']);
         if ($speed <= 0) {
             $speed = 40;
@@ -128,6 +130,16 @@ final class VJ_Marquee_Banner {
 
         $css .= $scope . '{--vj-marquee-duration:' . $speed . 's;';
         $css .= '--vj-marquee-gap:' . $gap . 'px;';
+
+        $padding = $this->sanitize_css_value($options['padding']);
+        if ($padding !== '') {
+            $css .= 'padding:' . $padding . ';';
+        }
+
+        $margin = $this->sanitize_css_value($options['margin']);
+        if ($margin !== '') {
+            $css .= 'margin:' . $margin . ';';
+        }
 
         if ($options['content_type'] === 'text') {
             $height = floatval($options['height']);
@@ -347,6 +359,14 @@ final class VJ_Marquee_Banner {
         }
 
         return $fonts;
+    }
+
+    private function sanitize_css_value($value) {
+        $value = is_string($value) ? $value : '';
+        $value = wp_strip_all_tags($value);
+        $value = str_replace(array(';', '{', '}', '<', '>'), '', $value);
+        $value = preg_replace('/\s+/', ' ', $value);
+        return trim($value);
     }
 
     private function sanitize_font_name($font) {
@@ -859,6 +879,24 @@ final class VJ_Marquee_Banner {
             'vj_marquee_banner_style',
             array('class' => 'vj-marquee-field vj-marquee-field--images')
         );
+
+        add_settings_field(
+            'padding',
+            'Padding (CSS)',
+            array($this, 'field_padding'),
+            'vj-marquee-banner',
+            'vj_marquee_banner_style',
+            array('class' => 'vj-marquee-field vj-marquee-field--media')
+        );
+
+        add_settings_field(
+            'margin',
+            'Margin (CSS)',
+            array($this, 'field_margin'),
+            'vj-marquee-banner',
+            'vj_marquee_banner_style',
+            array('class' => 'vj-marquee-field vj-marquee-field--media')
+        );
     }
 
     public function sanitize_options($input) {
@@ -892,8 +930,8 @@ final class VJ_Marquee_Banner {
         }
         $output['speed'] = (string) $speed;
 
-        $output['bg_color'] = isset($input['bg_color']) ? sanitize_hex_color($input['bg_color']) : $defaults['bg_color'];
-        $output['text_color'] = isset($input['text_color']) ? sanitize_hex_color($input['text_color']) : $defaults['text_color'];
+        $output['bg_color'] = isset($input['bg_color']) ? $this->sanitize_css_value($input['bg_color']) : $defaults['bg_color'];
+        $output['text_color'] = isset($input['text_color']) ? $this->sanitize_css_value($input['text_color']) : $defaults['text_color'];
 
         if (!$output['bg_color']) {
             $output['bg_color'] = $defaults['bg_color'];
@@ -981,6 +1019,12 @@ final class VJ_Marquee_Banner {
             $image_height = 120;
         }
         $output['image_height'] = (string) $image_height;
+
+        $padding = isset($input['padding']) ? $this->sanitize_css_value($input['padding']) : $defaults['padding'];
+        $output['padding'] = $padding !== '' ? $padding : $defaults['padding'];
+
+        $margin = isset($input['margin']) ? $this->sanitize_css_value($input['margin']) : $defaults['margin'];
+        $output['margin'] = $margin !== '' ? $margin : $defaults['margin'];
 
         return $output;
     }
@@ -1135,13 +1179,15 @@ final class VJ_Marquee_Banner {
     public function field_bg_color() {
         $options = $this->get_options();
         $value = esc_attr($options['bg_color']);
-        echo '<input type="color" name="' . self::OPTION_KEY . '[bg_color]" value="' . $value . '">';
+        echo '<input type="text" name="' . self::OPTION_KEY . '[bg_color]" value="' . $value . '" class="regular-text" placeholder="#111111">';
+        echo '<p class="description">Supports hex, rgb/rgba, hsl, or CSS variables.</p>';
     }
 
     public function field_text_color() {
         $options = $this->get_options();
         $value = esc_attr($options['text_color']);
-        echo '<input type="color" name="' . self::OPTION_KEY . '[text_color]" value="' . $value . '">';
+        echo '<input type="text" name="' . self::OPTION_KEY . '[text_color]" value="' . $value . '" class="regular-text" placeholder="#ffffff">';
+        echo '<p class="description">Supports hex, rgb/rgba, hsl, or CSS variables.</p>';
     }
 
     public function field_height() {
@@ -1199,6 +1245,20 @@ final class VJ_Marquee_Banner {
         $options = $this->get_options();
         $value = esc_attr($options['image_height']);
         echo '<input type="number" name="' . self::OPTION_KEY . '[image_height]" value="' . $value . '" class="small-text" min="16" max="120" step="1">';
+    }
+
+    public function field_padding() {
+        $options = $this->get_options();
+        $value = esc_attr($options['padding']);
+        echo '<input type="text" name="' . self::OPTION_KEY . '[padding]" value="' . $value . '" class="regular-text" placeholder="0 or 8px 16px">';
+        echo '<p class="description">Applies to the banner container.</p>';
+    }
+
+    public function field_margin() {
+        $options = $this->get_options();
+        $value = esc_attr($options['margin']);
+        echo '<input type="text" name="' . self::OPTION_KEY . '[margin]" value="' . $value . '" class="regular-text" placeholder="0 or 12px 0">';
+        echo '<p class="description">Applies outside the banner container.</p>';
     }
 
     public function field_font_family() {
