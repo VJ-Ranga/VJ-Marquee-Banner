@@ -15,6 +15,37 @@ document.addEventListener('DOMContentLoaded', function () {
         return;
     }
 
+    if (window.jQuery && window.jQuery.fn && window.jQuery.fn.wpColorPicker) {
+        window.jQuery('.vj-marquee-color-picker').each(function () {
+            var picker = window.jQuery(this);
+            var targetSelector = picker.data('target');
+            var target = window.jQuery(targetSelector);
+            var initial = (target.val() || '').trim();
+
+            picker.wpColorPicker({
+                clear: function () {
+                    target.val('');
+                },
+                change: function (event, ui) {
+                    if (ui && ui.color) {
+                        target.val(ui.color.toString());
+                    }
+                }
+            });
+
+            if (/^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(initial)) {
+                picker.wpColorPicker('color', initial);
+            }
+
+            target.on('input', function () {
+                var value = target.val().trim();
+                if (/^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(value)) {
+                    picker.wpColorPicker('color', value);
+                }
+            });
+        });
+    }
+
     var setActiveTab = function (tab) {
         activeTab = tab;
         navItems.forEach(function (btn) {

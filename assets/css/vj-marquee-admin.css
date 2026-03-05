@@ -244,3 +244,50 @@
 .vj-marquee-field--hidden {
     display: none;
 }
+
+.vj-marquee-boxmodel {
+    max-width: 560px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 12px;
+}
+
+.vj-marquee-boxmodel-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.vj-marquee-boxmodel-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.vj-marquee-boxmodel-item span {
+    font-size: 12px;
+    font-weight: 600;
+    color: #475569;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.vj-marquee-boxmodel .regular-text {
+    max-width: 100%;
+}
+
+.vj-marquee-color-field {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    max-width: 560px;
+}
+
+.vj-marquee-color-field .regular-text {
+    flex: 1;
+}
+
+.vj-marquee-color-field .wp-picker-container {
+    flex-shrink: 0;
+}

@@ -59,6 +59,14 @@ final class VJ_Marquee_Banner {
             'image_height' => '36',
             'padding' => '0',
             'margin' => '0',
+            'padding_top' => '0',
+            'padding_right' => '0',
+            'padding_bottom' => '0',
+            'padding_left' => '0',
+            'margin_top' => '0',
+            'margin_right' => '0',
+            'margin_bottom' => '0',
+            'margin_left' => '0',
         );
     }
 
@@ -131,14 +139,36 @@ final class VJ_Marquee_Banner {
         $css .= $scope . '{--vj-marquee-duration:' . $speed . 's;';
         $css .= '--vj-marquee-gap:' . $gap . 'px;';
 
-        $padding = $this->sanitize_css_value($options['padding']);
-        if ($padding !== '') {
-            $css .= 'padding:' . $padding . ';';
+        $padding_top = $this->sanitize_css_value(isset($options['padding_top']) ? $options['padding_top'] : '');
+        $padding_right = $this->sanitize_css_value(isset($options['padding_right']) ? $options['padding_right'] : '');
+        $padding_bottom = $this->sanitize_css_value(isset($options['padding_bottom']) ? $options['padding_bottom'] : '');
+        $padding_left = $this->sanitize_css_value(isset($options['padding_left']) ? $options['padding_left'] : '');
+        if ($padding_top !== '' || $padding_right !== '' || $padding_bottom !== '' || $padding_left !== '') {
+            $css .= 'padding-top:' . ($padding_top !== '' ? $padding_top : '0') . ';';
+            $css .= 'padding-right:' . ($padding_right !== '' ? $padding_right : '0') . ';';
+            $css .= 'padding-bottom:' . ($padding_bottom !== '' ? $padding_bottom : '0') . ';';
+            $css .= 'padding-left:' . ($padding_left !== '' ? $padding_left : '0') . ';';
+        } else {
+            $padding_legacy = $this->sanitize_css_value(isset($options['padding']) ? $options['padding'] : '');
+            if ($padding_legacy !== '') {
+                $css .= 'padding:' . $padding_legacy . ';';
+            }
         }
 
-        $margin = $this->sanitize_css_value($options['margin']);
-        if ($margin !== '') {
-            $css .= 'margin:' . $margin . ';';
+        $margin_top = $this->sanitize_css_value(isset($options['margin_top']) ? $options['margin_top'] : '');
+        $margin_right = $this->sanitize_css_value(isset($options['margin_right']) ? $options['margin_right'] : '');
+        $margin_bottom = $this->sanitize_css_value(isset($options['margin_bottom']) ? $options['margin_bottom'] : '');
+        $margin_left = $this->sanitize_css_value(isset($options['margin_left']) ? $options['margin_left'] : '');
+        if ($margin_top !== '' || $margin_right !== '' || $margin_bottom !== '' || $margin_left !== '') {
+            $css .= 'margin-top:' . ($margin_top !== '' ? $margin_top : '0') . ';';
+            $css .= 'margin-right:' . ($margin_right !== '' ? $margin_right : '0') . ';';
+            $css .= 'margin-bottom:' . ($margin_bottom !== '' ? $margin_bottom : '0') . ';';
+            $css .= 'margin-left:' . ($margin_left !== '' ? $margin_left : '0') . ';';
+        } else {
+            $margin_legacy = $this->sanitize_css_value(isset($options['margin']) ? $options['margin'] : '');
+            if ($margin_legacy !== '') {
+                $css .= 'margin:' . $margin_legacy . ';';
+            }
         }
 
         if ($options['content_type'] === 'text') {
@@ -222,6 +252,7 @@ final class VJ_Marquee_Banner {
 
         wp_enqueue_media();
         $this->register_assets();
+        wp_enqueue_style('wp-color-picker');
         wp_enqueue_style(
             'vj-marquee-banner-admin',
             plugins_url('assets/css/vj-marquee-admin.css', __FILE__),
@@ -231,7 +262,7 @@ final class VJ_Marquee_Banner {
         wp_enqueue_script(
             'vj-marquee-banner-admin',
             plugins_url('assets/js/vj-marquee-admin.js', __FILE__),
-            array(),
+            array('jquery', 'wp-color-picker'),
             VJ_MARQUEE_BANNER_VERSION,
             true
         );
@@ -880,23 +911,8 @@ final class VJ_Marquee_Banner {
             array('class' => 'vj-marquee-field vj-marquee-field--images')
         );
 
-        add_settings_field(
-            'padding',
-            'Padding (CSS)',
-            array($this, 'field_padding'),
-            'vj-marquee-banner',
-            'vj_marquee_banner_style',
-            array('class' => 'vj-marquee-field vj-marquee-field--media')
-        );
-
-        add_settings_field(
-            'margin',
-            'Margin (CSS)',
-            array($this, 'field_margin'),
-            'vj-marquee-banner',
-            'vj_marquee_banner_style',
-            array('class' => 'vj-marquee-field vj-marquee-field--media')
-        );
+        add_settings_field('padding_box', 'Padding (TRBL)', array($this, 'field_padding_box'), 'vj-marquee-banner', 'vj_marquee_banner_style', array('class' => 'vj-marquee-field vj-marquee-field--media'));
+        add_settings_field('margin_box', 'Margin (TRBL)', array($this, 'field_margin_box'), 'vj-marquee-banner', 'vj_marquee_banner_style', array('class' => 'vj-marquee-field vj-marquee-field--media'));
     }
 
     public function sanitize_options($input) {
@@ -1020,11 +1036,20 @@ final class VJ_Marquee_Banner {
         }
         $output['image_height'] = (string) $image_height;
 
-        $padding = isset($input['padding']) ? $this->sanitize_css_value($input['padding']) : $defaults['padding'];
-        $output['padding'] = $padding !== '' ? $padding : $defaults['padding'];
+        $output['padding_top'] = isset($input['padding_top']) ? $this->sanitize_css_value($input['padding_top']) : $defaults['padding_top'];
+        $output['padding_right'] = isset($input['padding_right']) ? $this->sanitize_css_value($input['padding_right']) : $defaults['padding_right'];
+        $output['padding_bottom'] = isset($input['padding_bottom']) ? $this->sanitize_css_value($input['padding_bottom']) : $defaults['padding_bottom'];
+        $output['padding_left'] = isset($input['padding_left']) ? $this->sanitize_css_value($input['padding_left']) : $defaults['padding_left'];
 
-        $margin = isset($input['margin']) ? $this->sanitize_css_value($input['margin']) : $defaults['margin'];
-        $output['margin'] = $margin !== '' ? $margin : $defaults['margin'];
+        $output['margin_top'] = isset($input['margin_top']) ? $this->sanitize_css_value($input['margin_top']) : $defaults['margin_top'];
+        $output['margin_right'] = isset($input['margin_right']) ? $this->sanitize_css_value($input['margin_right']) : $defaults['margin_right'];
+        $output['margin_bottom'] = isset($input['margin_bottom']) ? $this->sanitize_css_value($input['margin_bottom']) : $defaults['margin_bottom'];
+        $output['margin_left'] = isset($input['margin_left']) ? $this->sanitize_css_value($input['margin_left']) : $defaults['margin_left'];
+
+        $padding = isset($input['padding']) ? $this->sanitize_css_value($input['padding']) : '';
+        $output['padding'] = $padding !== '' ? $padding : (isset($defaults['padding']) ? $defaults['padding'] : '0');
+        $margin = isset($input['margin']) ? $this->sanitize_css_value($input['margin']) : '';
+        $output['margin'] = $margin !== '' ? $margin : (isset($defaults['margin']) ? $defaults['margin'] : '0');
 
         return $output;
     }
@@ -1178,16 +1203,21 @@ final class VJ_Marquee_Banner {
 
     public function field_bg_color() {
         $options = $this->get_options();
-        $value = esc_attr($options['bg_color']);
-        echo '<input type="text" name="' . self::OPTION_KEY . '[bg_color]" value="' . $value . '" class="regular-text" placeholder="#111111">';
-        echo '<p class="description">Supports hex, rgb/rgba, hsl, or CSS variables.</p>';
+        $this->render_color_field('bg_color', $options['bg_color'], '#111111');
     }
 
     public function field_text_color() {
         $options = $this->get_options();
-        $value = esc_attr($options['text_color']);
-        echo '<input type="text" name="' . self::OPTION_KEY . '[text_color]" value="' . $value . '" class="regular-text" placeholder="#ffffff">';
-        echo '<p class="description">Supports hex, rgb/rgba, hsl, or CSS variables.</p>';
+        $this->render_color_field('text_color', $options['text_color'], '#ffffff');
+    }
+
+    private function render_color_field($key, $value, $placeholder) {
+        $id = 'vj-marquee-' . $key;
+        echo '<div class="vj-marquee-color-field">';
+        echo '<input type="text" id="' . esc_attr($id) . '" name="' . self::OPTION_KEY . '[' . esc_attr($key) . ']" value="' . esc_attr($value) . '" class="regular-text vj-marquee-color-text" placeholder="' . esc_attr($placeholder) . '">';
+        echo '<input type="text" class="vj-marquee-color-picker" data-target="#' . esc_attr($id) . '" value="' . esc_attr($value) . '">';
+        echo '</div>';
+        echo '<p class="description">Pick from palette or type hex, rgb/rgba, hsl, or CSS variable.</p>';
     }
 
     public function field_height() {
@@ -1247,18 +1277,37 @@ final class VJ_Marquee_Banner {
         echo '<input type="number" name="' . self::OPTION_KEY . '[image_height]" value="' . $value . '" class="small-text" min="16" max="120" step="1">';
     }
 
-    public function field_padding() {
+    public function field_padding_box() {
         $options = $this->get_options();
-        $value = esc_attr($options['padding']);
-        echo '<input type="text" name="' . self::OPTION_KEY . '[padding]" value="' . $value . '" class="regular-text" placeholder="0 or 8px 16px">';
-        echo '<p class="description">Applies to the banner container.</p>';
+        echo '<div class="vj-marquee-boxmodel">';
+        echo '<div class="vj-marquee-boxmodel-grid">';
+        $this->render_box_input('Top', 'padding_top', $options['padding_top'], '0 or 8px');
+        $this->render_box_input('Right', 'padding_right', $options['padding_right'], '0 or 16px');
+        $this->render_box_input('Bottom', 'padding_bottom', $options['padding_bottom'], '0 or 8px');
+        $this->render_box_input('Left', 'padding_left', $options['padding_left'], '0 or 16px');
+        echo '</div>';
+        echo '<p class="description">Use any valid CSS unit (px, rem, em, %, vh, vw).</p>';
+        echo '</div>';
     }
 
-    public function field_margin() {
+    public function field_margin_box() {
         $options = $this->get_options();
-        $value = esc_attr($options['margin']);
-        echo '<input type="text" name="' . self::OPTION_KEY . '[margin]" value="' . $value . '" class="regular-text" placeholder="0 or 12px 0">';
-        echo '<p class="description">Applies outside the banner container.</p>';
+        echo '<div class="vj-marquee-boxmodel">';
+        echo '<div class="vj-marquee-boxmodel-grid">';
+        $this->render_box_input('Top', 'margin_top', $options['margin_top'], '0 or 12px');
+        $this->render_box_input('Right', 'margin_right', $options['margin_right'], '0 or auto');
+        $this->render_box_input('Bottom', 'margin_bottom', $options['margin_bottom'], '0 or 12px');
+        $this->render_box_input('Left', 'margin_left', $options['margin_left'], '0 or auto');
+        echo '</div>';
+        echo '<p class="description">Applies outside the banner (top, right, bottom, left).</p>';
+        echo '</div>';
+    }
+
+    private function render_box_input($label, $key, $value, $placeholder) {
+        echo '<label class="vj-marquee-boxmodel-item">';
+        echo '<span>' . esc_html($label) . '</span>';
+        echo '<input type="text" name="' . self::OPTION_KEY . '[' . esc_attr($key) . ']" value="' . esc_attr($value) . '" class="regular-text" placeholder="' . esc_attr($placeholder) . '">';
+        echo '</label>';
     }
 
     public function field_font_family() {
