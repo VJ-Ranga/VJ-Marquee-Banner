@@ -869,6 +869,9 @@ final class VJ_Marquee_Banner {
         if ($template_id > 0 && !in_array(get_post_type($template_id), $allowed_template_types, true)) {
             $template_id = 0;
         }
+        if ($template_id > 0 && $this->is_elementor_kit($template_id)) {
+            $template_id = 0;
+        }
         $output['elementor_template'] = $template_id ? (string) $template_id : '';
 
         $speed = isset($input['speed']) ? floatval($input['speed']) : floatval($defaults['speed']);
@@ -1475,6 +1478,9 @@ final class VJ_Marquee_Banner {
             if (!$type) {
                 $type = get_post_meta($post->ID, '_elementor_template_type', true);
             }
+            if ($this->is_elementor_kit($post->ID, $type)) {
+                continue;
+            }
             $templates[] = array(
                 'id' => $post->ID,
                 'title' => $post->post_title,
@@ -1500,6 +1506,21 @@ final class VJ_Marquee_Banner {
         );
 
         return isset($map[$type]) ? $map[$type] : ucfirst(str_replace('type_', '', $type));
+    }
+
+    private function is_elementor_kit($template_id, $type = '') {
+        $normalized = strtolower(trim((string) $type));
+        if ($normalized === 'kit') {
+            return true;
+        }
+
+        $meta_type = get_post_meta($template_id, '_elementor_template_type', true);
+        if (strtolower((string) $meta_type) === 'kit') {
+            return true;
+        }
+
+        $title = get_the_title($template_id);
+        return strtolower(trim((string) $title)) === 'default kit';
     }
 
     private function get_elementor_template_post_types() {
